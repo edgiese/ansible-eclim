@@ -1,0 +1,81 @@
+---
+# This playbook contains common plays to install eclipse.
+
+- name: eclipse | Check user exists
+  user: name={{eclipse_owner}} state=present
+
+- name: eclipse | Check user home directory
+  stat: path={{eclipse_owner_home}}
+  register: home_present
+
+- debug: msg=" eclipse | Path exists and is a directory"
+  when: home_present.stat.isdir is defined and home_present.stat.isdir == true
+
+- name: eclipse | Create temporary directory
+  shell: mktemp -d
+  register: tempdir
+  tags: eclipse_setup
+
+- name: eclipse | Download eclipse on 'master' if we don't have it
+  connection: local
+  sudo: true
+  get_url: url={{eclipse_url}}  dest={{cur_dir}}/{{eclipse_archive}} force=no validate_certs=no
+
+- name: eclipse | Copy eclipse into place
+  copy: src={{cur_dir}}/{{eclipse_archive}}  dest="{{ eclipse_dir_tmp }}/{{eclipse_archive}}" owner="{{eclipse_owner}}" group="{{eclipse_group}}" mode=644
+  register: eclipse_download
+  tags: eclipse_setup
+
+- name: eclipse | Create base directory
+  file:
+    dest="{{eclipse_base_dir}}/eclipse-{{eclipse_name}}"
+    state=directory
+    owner="{{eclipse_owner}}"
+    group="{{eclipse_group}}"
+  sudo : yes
+  when: eclipse_download.changed
+  tags: eclipse_setup
+
+- name: eclipse | Install tar
+  apt:
+    pkg=tar
+    state="present"
+  tags: eclipse_setup
+
+- name: eclipse | Extract archive eclipse
+  command: tar xzf {{ eclipse_dir_tmp }}/{{eclipse_archive}} -C {{eclipse_base_dir}}/eclipse-{{eclipse_name}} --strip-components=1
+  when: eclipse_download.changed
+
+- name: eclipse | Change archive eclipse ownership
+  file: path={{eclipse_base_dir}}/eclipse-{{eclipse_name}} owner={{eclipse_owner}} state=directory recurse=yes
+  when: eclipse_download.changed
+
+- name: eclipse | Stat {{eclipse_base_dir}}/eclipse-{{eclipse_name}}
+  stat: path={{eclipse_base_dir}}/eclipse-{{eclipse_name}}
+  register: eclipse_archive_extracted_present
+
+- debug: msg=" eclipse | Path exists and is a directory"
+  when: eclipse_archive_extracted_present.stat.isdir is defined and eclipse_archive_extracted_present.stat.isdir == true
+
+- fail: msg=" eclipse | Whoops! file ownership has changed"
+  when: eclipse_archive_extracted_present.stat.pw_name != '{{eclipse_owner}}'
+
+- name: eclipse | Create a link to eclipse (1)
+  file:
+    src="{{eclipse_base_dir}}/eclipse-{{eclipse_name}}"
+    dest="{{eclipse_base_dir}}/eclipse-{{eclipse_major}}"
+    state=link
+    owner="{{eclipse_owner}}"
+    group="{{eclipse_group}}"
+  sudo: yes
+  tags: eclipse_setup
+
+- name: eclipse | Create a link to eclipse (2)
+  file:
+    src="{{eclipse_base_dir}}/eclipse-{{eclipse_name}}"
+    dest="{{eclipse_link_base_dir}}/eclipse-{{eclipse_major}}"
+    state=link
+    owner="{{eclipse_owner}}"
+#   group="{{eclipse_group}}"
+  sudo: yes
+  tags: eclipse_setup

@@ -1,0 +1,5 @@
+---
+
+- vars:
+  user: 'ed'
+  home: '/home/ed'

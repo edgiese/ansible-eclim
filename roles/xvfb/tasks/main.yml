@@ -1,0 +1,6 @@
+---
+ 
+- name: install xvfb
+  apt: name=xvfb state=latest update_cache=yes
+  sudo: yes
+ 

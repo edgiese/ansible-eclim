@@ -1,0 +1,23 @@
+---
+# Set up vim to edit file correctly
+- name: Make sure vim is loaded
+  apt: name=vim state=latest update_cache=yes
+  sudo: yes
+
+- name: make sure git is installed
+  apt: name=git state=latest update_cache=yes
+  sudo: yes
+
+- name: make sure ctags is installed
+  apt: name=ctags state=latest update_cache=yes
+  sudo: yes
+
+- name: get the vimrc settings from a repo
+  git: repo={{ vimrcrepo }}
+       dest={{ home }}/vimrc
+
+- name: remove old directory if it exists
+  file: src={{ home }}/vimrc dest={{ home }}/.vim force=yes state=absent
+
+- name: link to the new directory
+  file: src={{ home }}/vimrc dest={{ home }}/.vim force=yes state=link

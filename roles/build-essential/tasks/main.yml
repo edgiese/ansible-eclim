@@ -1,0 +1,6 @@
+---
+ 
+- name: install build essentials
+  apt: name=build-essential state=latest update_cache=yes
+  sudo: yes
+ 

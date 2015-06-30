@@ -1,0 +1,7 @@
+---
+ 
+- name: eclim | Download eclim on 'master' if we don't have it
+  connection: local
+  get_url: url={{eclim_url}}  dest={{ cur_dir }}/{{ eclim_name }} force=no validate_certs=no
+
+ 

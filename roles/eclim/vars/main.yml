@@ -1,0 +1,4 @@
+---
+
+eclim_name: "eclim_2.4.1.jar"
+eclim_url: "http://sourceforge.net/projects/eclim/files/eclim/2.4.1/{{ eclim_name }}/download"

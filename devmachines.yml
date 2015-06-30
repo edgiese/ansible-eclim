@@ -1,0 +1,9 @@
+---
+- hosts: devmachines
+  vars:
+    - user: 'ed'
+    - home: '/home/ed'
+    - vimrcrepo: 'https://github.com/edgiese/dotvim.git'
+  roles:
+    - eclim
+
