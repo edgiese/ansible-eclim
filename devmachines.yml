@@ -5,5 +5,11 @@
     - home: '/home/ed'
     - vimrcrepo: 'https://github.com/edgiese/dotvim.git'
   roles:
+    - build-essential
+    - java
+    - maven
+    - xvfb
+    - vimedit
+    - eclipse
     - eclim
 
