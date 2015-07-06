@@ -4,4 +4,15 @@
   connection: local
   get_url: url={{eclim_url}}  dest={{ cur_dir }}/{{ eclim_name }} force=no validate_certs=no
 
- 
+- name: eclim | Install eclim into eclipse
+  shell: java -Dvim.files={{ home }}/.vim -Declipse.home={{eclipse_base_dir}}/eclipse-{{eclipse_name}} -jar {{ eclim_name }} install 
+  creates: {{eclipse_base_dir}}/eclipse-{{eclipse_name}}/plugins/eclim_{{ eclim_ver }}
+
+- name: eclim | Create shell script to start eclim
+  shell: echo "DISPLAY=:1 {{eclipse_base_dir}}/eclipse-{{eclipse_name}}/eclim -b" > start_eclim.sh ; chmod +x start_eclim.sh
+  creates: start_eclim.sh
+  
+- name: eclim | Create shell script to start headless x
+  shell: echo "Xvfb :1 -screen 0 1024x768x24 &" > start_headless.sh ; chmod +x start_headless.sh
+  creates: start_headless.sh
+  
