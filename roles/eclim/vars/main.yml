@@ -2,4 +2,4 @@
 
 eclim_version: "2.4.1"
 eclim_name: "eclim_{{ eclim_version }}.jar"
-eclim_url: "http://sourceforge.net/projects/eclim/files/eclim/{{ eclim_verion }}/{{ eclim_name }}/download"
+eclim_url: "http://sourceforge.net/projects/eclim/files/eclim/{{ eclim_version }}/{{ eclim_name }}/download"
