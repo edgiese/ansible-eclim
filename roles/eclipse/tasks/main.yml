@@ -77,5 +77,10 @@
     state=link
     owner="{{eclipse_owner}}"
 #   group="{{eclipse_group}}"
+
+- name: install graphics libraries for headless display
+  apt: name=libgtk2.0-0:i386 state=latest update_cache=yes
+  sudo: yes
+
   sudo: yes
   tags: eclipse_setup
